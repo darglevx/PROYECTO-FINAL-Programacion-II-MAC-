@@ -66,7 +66,7 @@ Entregar TODA LA CARPETA DEL PROYECTO DE CODEBLOCKS en un archivo ZIP.
 (las vamos desmarcando conforme las usemos, para no saturar el programa): */
 
 #include <stdio.h>
-//#include <stdlib.h>
+#include <stdlib.h>
 //#include <math.h>
 //#include <ctype.h>
 //#include <winbgim.h>
@@ -156,18 +156,16 @@ int Buscar_posicion(char *clave, int n, Producto *p)
     return encontrado;
 }
 
-void Alta_producto()
-{
-	
-}
-
+//////////////////////////////////
 void Listado()
 {
-
+	system("cls");
 }
 
+///////////////////////////////////
 void Ver_menu(void)
 {
+	system("cls"); //agregar al principio de cada funcion principal, de preferencia
     printf("\n\t------------ MENÚ ------------\n");
     printf("\t 1. Dar de alta un producto\n");
     printf("\t 2. Mostrar todos los productos\n");
@@ -180,6 +178,168 @@ void Ver_menu(void)
 
 
 // ---------------------------- FUNCIONES PRINCIPALES ------------------------------//
+
+void Alta_producto(void)
+{
+    Producto nuevo;
+    FILE *archivo;
+    char clave_temp[10]; // validar longitud, entonces usamos una mas grande
+
+    printf("\n\t	Alta de producto 	\n");
+
+    // 1. CLAVE
+    // ver si hay duplicados
+    int n = 0;
+    Producto *lista = NULL;
+
+    archivo = fopen("productos.dat", "rb");
+    if (archivo != NULL)
+    {
+        // Contar existentes
+        Producto temp;
+        while (fread(&temp, sizeof(Producto), 1, archivo) == 1)
+            n++;
+        rewind(archivo);
+
+        // Cargar en memoria dinámica
+        lista = (Producto *)malloc(n * sizeof(Producto));
+        if (lista == NULL)
+        {
+            printf("Error: no se pudo reservar memoria.\n");
+            fclose(archivo);
+            pausa();
+            return;
+        }
+        fread(lista, sizeof(Producto), n, archivo);
+        fclose(archivo);
+    }
+
+    // Pedir y validar clave
+    do
+    {
+        printf("\tClave del producto (2 caracteres): ");
+        fgets(clave_temp, sizeof(clave_temp), stdin);
+        Limpiar_salto_linea(clave_temp);
+
+        if (strlen(clave_temp) != 2)
+        {
+            printf("\tError: la clave debe tener exactamente 2 caracteres.\n");
+            continue;
+        }
+
+        // Verificar si hay duplicado
+        if (n > 0 && Buscar_posicion(clave_temp, n, lista) != -1)
+        {
+            printf("\tError: ya existe un producto activo con esa clave.\n");
+            continue;
+        }
+
+        break; // Clave válida y única
+
+    } while (1);
+
+    strncpy(nuevo.clave, clave_temp, 3); // Copia los 2 chars + \0
+
+    // 2. DESCRIPCIÓN DEL PROD.
+    printf("\tDescripción del producto (máx. 49 caracteres): ");
+    fgets(nuevo.descripcion_producto, sizeof(nuevo.descripcion_producto), stdin);
+    Limpiar_salto_linea(nuevo.descripcion_producto);
+
+    // 3. COSTO DE PRODUCCIÓN
+    do
+    {
+        printf("\tCosto de producción: $");
+        if (scanf("%f", &nuevo.costo_produccion) != 1 || nuevo.costo_produccion < 0)
+        {
+            printf("\tError: ingrese un valor numérico positivo.\n");
+            Limpiar_buffer();
+            nuevo.costo_produccion = -1; // reintento
+            continue;
+        }
+        Limpiar_buffer();
+        break;
+    } while (1);
+
+    // 4. PRECIO DE VENTA
+    do
+    {
+        printf("\tPrecio de venta:     $");
+        if (scanf("%f", &nuevo.precio_venta) != 1 || nuevo.precio_venta < 0)
+        {
+            printf("\tError: ingrese un valor numérico positivo.\n");
+            Limpiar_buffer();
+            nuevo.precio_venta = -1;
+            continue;
+        }
+        Limpiar_buffer();
+        break;
+    } while (1);
+
+    // 5. UNIDADES VENDIDAS
+    do
+    {
+        printf("\tUnidades vendidas:   ");
+        if (scanf("%f", &nuevo.unidades_vendidas) != 1 || nuevo.unidades_vendidas < 0)
+        {
+            printf("\tError: ingrese un valor numérico positivo.\n");
+            Limpiar_buffer();
+            nuevo.unidades_vendidas = -1;
+            continue;
+        }
+        Limpiar_buffer();
+        break;
+    } while (1);
+
+    // 6. BORRADO lógico: siempre inicia en 0 (activo)
+    nuevo.borrado = 0;
+
+    // 7. CALCULA LA GANANCIA
+    float ganancia = (nuevo.precio_venta - nuevo.costo_produccion) * nuevo.unidades_vendidas;
+
+    // 8. CONFIRMACIÓN
+    printf("\n\t	CONFIRMAR DATOS 	\n");
+    printf("\tClave           : %s\n",  nuevo.clave);
+    printf("\tDescripción     : %s\n",  nuevo.descripcion_producto);
+    printf("\tCosto producción: $%.2f\n", nuevo.costo_produccion);
+    printf("\tPrecio de venta : $%.2f\n", nuevo.precio_venta);
+    printf("\tUnidades vendidas: %.0f\n", nuevo.unidades_vendidas);
+    printf("\tGanancia estimada: $%.2f\n", ganancia);
+    printf("\n\t¿Guardar este producto? (s/n): ");
+
+    char confirmacion;
+    confirmacion = getchar();
+    Limpiar_buffer();
+
+    if (confirmacion != 's' && confirmacion != 'S')
+    {
+        printf("\tAlta cancelada.\n");
+        free(lista);
+        pausa();
+        return;
+    }
+
+    //  9. ESCRITURA EN ARCHIVO BINARIO
+    archivo = fopen("productos.dat", "ab");
+    if (archivo == NULL)
+    {
+        printf("\tError: no se pudo abrir el archivo para escritura.\n");
+        free(lista);
+        pausa();
+        return;
+    }
+
+    fwrite(&nuevo, sizeof(Producto), 1, archivo);
+    fclose(archivo);
+
+    printf("\n\tProducto '%s' guardado correctamente.\n", nuevo.clave);
+
+    // 10. LIBERAR MEMORIA DINÁMICA
+    free(lista);
+
+    pausa(); //hacer que vea el mensaje, sino pasa de largo
+}
+
+////////////////////////////////////////////////////////////////////////////////////////
 int Seleccion_menu(int opcion)
 {
 
@@ -231,9 +391,6 @@ int Seleccion_menu(int opcion)
     return opcion;
 }
 
-
-
-
 int main()
 {
 	
@@ -241,7 +398,8 @@ int main()
 	
 	//caracteres en español
     setlocale(LC_ALL, "spanish");
-    setlocale(LC_ALL, "es_ES");
+    //conserva el punto de los decimales y no reemplaza por comas.
+    setlocale(LC_NUMERIC, "C");
     //Producto product;
     
 	Seleccion_menu(opcion);
