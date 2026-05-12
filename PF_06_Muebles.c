@@ -77,8 +77,8 @@ Entregar TODA LA CARPETA DEL PROYECTO DE CODEBLOCKS en un archivo ZIP.
 // -- Estructura Producto -- //
 typedef struct
 {
-    char clave[3]; //AQUI SON DOS USABLES + \0
-    char descripcion_producto[50]; //49 char + \0
+    char clave[4]; //AQUI SON TRES USABLES + \0
+    char descripcion_producto[51]; //50 char + \0
     float costo_produccion;
     float precio_venta;
     float unidades_vendidas;
@@ -158,8 +158,10 @@ int Buscar_posicion(char *clave, int n, Producto *p)
 }
 
 //////////////////////////////////
-void Listado()
+
+void Listado(void) //SEGUNDA OPCION
 {
+<<<<<<< HEAD
     FILE *archivo;
     Producto temp;
     int i = 1;
@@ -195,6 +197,95 @@ void Listado()
     pausa();
 
     fclose(archivo);
+=======
+    system("cls");
+
+    FILE *archivo;
+    Producto *lista = NULL;
+    int n = 0, activos = 0, i;
+
+    archivo = fopen("productos.dat", "rb");
+    if (archivo == NULL)
+    {
+        printf("\n\tNo hay productos registrados aún.\n");
+        pausa();
+        return;
+    }
+
+    Producto temp;
+    while (fread(&temp, sizeof(Producto), 1, archivo) == 1)
+        ++n;
+    rewind(archivo);
+
+    if (n == 0)
+    {
+        fclose(archivo);
+        printf("\n\tEl archivo está vacío.\n");
+        pausa();
+        return;
+    }
+
+    lista = (Producto *)malloc(n * sizeof(Producto));
+    if (lista == NULL)
+    {
+        printf("\tError: no se pudo reservar memoria.\n");
+        fclose(archivo);
+        pausa();
+        return;
+    }
+
+    fread(lista, sizeof(Producto), n, archivo);
+    fclose(archivo);
+    
+						// T A B L A 
+    // Encabezado (sin \t para no desplazar)
+    printf("\n %-5s %-30s %12s %13s %15s %12s\n",
+           "Clave", "Descripcion", "Costo prod.", "Precio venta",
+           "Unid.vendidas", "Ganancia");
+    printf(" ");
+    for (i = 0; i < 92; i++) printf("-");
+    printf("\n");
+
+    float ganancia_total = 0.0f;
+
+    for (i = 0; i < n; i++)
+    {
+        if (lista[i].borrado) continue;
+
+        float ganancia = (lista[i].precio_venta - lista[i].costo_produccion)
+                         * lista[i].unidades_vendidas;
+        ganancia_total += ganancia;
+        activos++;
+
+        printf(" %-5s %-30s %11.2f %12.2f %15.0f %11.2f\n",
+               lista[i].clave,
+               lista[i].descripcion_producto,
+               lista[i].costo_produccion,
+               lista[i].precio_venta,
+               lista[i].unidades_vendidas,
+               ganancia);
+    }
+
+    printf(" ");
+    for (i = 0; i < 92; i++) printf("-");
+    printf("\n");
+
+    if (activos == 0)
+        printf("\n No hay productos activos.\n");
+    else
+        printf("%-57s %11.2f\n", "GANANCIA TOTAL:", ganancia_total);
+        
+    /* 
+	El 57 imprime el texto "GANANCIA TOTAL:" justificado a la izquierda ocupando 57 caracteres 
+	Ese espacio en blanco es lo que empuja el número hasta alinearlo con la columna de Ganancia.
+	el 11 imprime ganancia_total con 2 decimales en un espacio de 11 caracteres.
+	*/
+
+    printf("\n Total de productos activos: %d\n", activos);
+
+    free(lista);
+    pausa();
+>>>>>>> c7b592967926480de5cc9efe1dfeba31ea63dce0
 }
 
 ///////////////////////////////////
@@ -252,13 +343,13 @@ void Alta_producto(void)
     // Pedir y validar clave
     do
     {
-        printf("\tClave del producto (2 caracteres): ");
+        printf("\tClave del producto (3 caracteres): ");
         fgets(clave_temp, sizeof(clave_temp), stdin);
         Limpiar_salto_linea(clave_temp);
 
-        if (strlen(clave_temp) != 2)
+        if (strlen(clave_temp) != 3)
         {
-            printf("\tError: la clave debe tener exactamente 2 caracteres.\n");
+            printf("\tError: la clave debe tener exactamente 3 caracteres.\n");
             continue;
         }
 
@@ -273,10 +364,15 @@ void Alta_producto(void)
 
     } while (1);
 
-    strncpy(nuevo.clave, clave_temp, 3); // Copia los 2 chars + \0
+    strncpy(nuevo.clave, clave_temp, 4); // Copia los 3 chars + \0
 
+<<<<<<< HEAD
     // 2. DESCRIPCIï¿½N DEL PROD.
     printf("\tDescripciï¿½n del producto (mï¿½x. 49 caracteres): ");
+=======
+    // 2. DESCRIPCIÓN DEL PROD.
+    printf("\tDescripción del producto (máx. 50 caracteres): ");
+>>>>>>> c7b592967926480de5cc9efe1dfeba31ea63dce0
     fgets(nuevo.descripcion_producto, sizeof(nuevo.descripcion_producto), stdin);
     Limpiar_salto_linea(nuevo.descripcion_producto);
 
