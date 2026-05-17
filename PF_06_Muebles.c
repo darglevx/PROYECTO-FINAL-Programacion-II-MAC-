@@ -158,46 +158,31 @@ int Buscar_posicion(char *clave, int n, Producto *p)
 }
 
 //////////////////////////////////
+void Listado()
+{
+	system("cls");
+}
 
+void Ver_menu(void)
+{
+	system("cls"); //agregar al principio de cada funcion principal, de preferencia
+    printf("\n\t------------ MENï¿½ ------------\n");
+    printf("\t 1. Dar de alta un producto\n");
+    printf("\t 2. Mostrar todos los productos\n");
+    printf("\t 3. Editar un producto\n");
+    printf("\t 4. Eliminar un producto\n");
+    printf("\t 5. Crear grï¿½fica de columnas\n");
+    printf("\t 6. Crear grï¿½fica circular\n");  
+    printf("\t 7. Salir\n\n\n");                   
+}
+
+
+// ---------------------------- FUNCIONES PRINCIPALES ------------------------------//
+
+
+//////////////////////////////////////////////////////////////////////////////////////
 void Listado(void) //SEGUNDA OPCION
 {
-<<<<<<< HEAD
-    FILE *archivo;
-    Producto temp;
-    int i = 1;
-
-	system("cls");
-
-    printf("\n\t\tLISTADO DE PRODUCTOS\n");
-
-    archivo = fopen("productos.dat", "rb");
-
-    if (archivo == NULL)    {
-        printf("\tError: no se pudo abrir el archivo para lectura.\n");
-        system("pause");
-        return;
-    }
-    
-    fread(&temp, sizeof(Producto), 1, archivo);
-
-    while(!feof(archivo))
-    {
-        if(temp.borrado == 0) // Solo muestra los no eliminados
-        {
-            printf("clave: %s\n", temp.clave);
-            printf("descripciï¿½n: %s\n", temp.descripcion_producto);
-            printf("costo de producciï¿½n: %.2f\n", temp.costo_produccion);
-            printf("precio de venta: %.2f\n", temp.precio_venta);
-            printf("unidades vendidas: %.0f\n", temp.unidades_vendidas);
-        }
-        printf("-----------------------------------\n");
-        fread(&temp, sizeof(Producto), 1, archivo);
-    }
-
-    pausa();
-
-    fclose(archivo);
-=======
     system("cls");
 
     FILE *archivo;
@@ -207,7 +192,7 @@ void Listado(void) //SEGUNDA OPCION
     archivo = fopen("productos.dat", "rb");
     if (archivo == NULL)
     {
-        printf("\n\tNo hay productos registrados aún.\n");
+        printf("\n\tNo hay productos registrados aï¿½n.\n");
         pausa();
         return;
     }
@@ -220,7 +205,7 @@ void Listado(void) //SEGUNDA OPCION
     if (n == 0)
     {
         fclose(archivo);
-        printf("\n\tEl archivo está vacío.\n");
+        printf("\n\tEl archivo estï¿½ vacï¿½o.\n");
         pausa();
         return;
     }
@@ -277,7 +262,7 @@ void Listado(void) //SEGUNDA OPCION
         
     /* 
 	El 57 imprime el texto "GANANCIA TOTAL:" justificado a la izquierda ocupando 57 caracteres 
-	Ese espacio en blanco es lo que empuja el número hasta alinearlo con la columna de Ganancia.
+	Ese espacio en blanco es lo que empuja el nï¿½mero hasta alinearlo con la columna de Ganancia.
 	el 11 imprime ganancia_total con 2 decimales en un espacio de 11 caracteres.
 	*/
 
@@ -285,25 +270,9 @@ void Listado(void) //SEGUNDA OPCION
 
     free(lista);
     pausa();
->>>>>>> c7b592967926480de5cc9efe1dfeba31ea63dce0
 }
 
-///////////////////////////////////
-void Ver_menu(void)
-{
-	system("cls"); //agregar al principio de cada funcion principal, de preferencia
-    printf("\n\t------------ MENï¿½ ------------\n");
-    printf("\t 1. Dar de alta un producto\n");
-    printf("\t 2. Mostrar todos los productos\n");
-    printf("\t 3. Editar un producto\n");
-    printf("\t 4. Eliminar un producto\n");
-    printf("\t 5. Crear grï¿½fica de columnas\n");
-    printf("\t 6. Crear grï¿½fica circular\n");  
-    printf("\t 7. Salir\n\n\n");                   
-}
-
-
-// ---------------------------- FUNCIONES PRINCIPALES ------------------------------//
+//////////////////////////////////////////////////////////////////////////////////////////////
 
 void Alta_producto(void)
 {
@@ -369,10 +338,6 @@ void Alta_producto(void)
 <<<<<<< HEAD
     // 2. DESCRIPCIï¿½N DEL PROD.
     printf("\tDescripciï¿½n del producto (mï¿½x. 49 caracteres): ");
-=======
-    // 2. DESCRIPCIÓN DEL PROD.
-    printf("\tDescripción del producto (máx. 50 caracteres): ");
->>>>>>> c7b592967926480de5cc9efe1dfeba31ea63dce0
     fgets(nuevo.descripcion_producto, sizeof(nuevo.descripcion_producto), stdin);
     Limpiar_salto_linea(nuevo.descripcion_producto);
 
@@ -521,54 +486,7 @@ int Seleccion_menu(int opcion)
     
     return opcion;
 }
-/*/
-void Borrar(){
-	char clavebuscada[10];
-	FILE *archivo;
-	int posicion, respuesta;
-	
-	system("cls");
-	
-	printf("Borrado de producto\n");
-	
-	printf("Clave del producto: ");
-	LeerCadena(clavebuscada, 3);
-	
-	archivo=fopen("productos.dat", "r+b");
-	
-	posicion=buscarPosicion(clavebuscada, archivo);
-	
-	if(posicion == -1){
-		printf("Producto no encontrado\n");
-		system("pause");
-		return;
-	}
-	
-	//Nos posicionamos en el producto
-	fseek(archivo, posicion*sizeof(Producto) ,SEEK_SET);
-	
-	//Leemos los datos
-	fread(&nuevo, sizeof(Producto), 1, archivo);
-	
-	EscribirProducto(nuevo);
-	
-	printf("ConfirmaciÃ³n de borrado (1=SI / 0=NO): ");
-	scanf("%d", &respuesta);
-	
-	if(respuesta==0)
-		printf("Cancelado\n");
-	else{
-		fseek(archivo, posicion*sizeof(Producto), SEEK_SET);
-		nuevo.borrado=1;
-		fwrite(&nuevo, sizeof(Producto), 1, archivo);
-		printf("Producto borrado\n");
-	}
-	
-	fclose(archivo);
-	
-	system("pause");
-}
-*/
+
 int main()
 {
 	
