@@ -10,25 +10,25 @@
 	
 */
 
-/* Supï¿½ngase que la empresa IA-MUEBLES fabrica diferentes productos y desea crear grï¿½ficas 
-que le permitan hacer un diagnï¿½stico de cï¿½mo se estï¿½ realizando el trabajo. 
+/* Supóngase que la empresa IA-MUEBLES fabrica diferentes productos y desea crear gráficas 
+que le permitan hacer un diagnóstico de cómo se está realizando el trabajo. 
 
 Los datos que actualmente se guardan de cada producto son:
 
     Clave (3 caracteres)
-    Descripciï¿½n del producto (50 caracteres)
-    Costo de producciï¿½n (flotante)
+    Descripción del producto (50 caracteres)
+    Costo de producción (flotante)
     Precio de venta (flotante)
     Unidades vendidas (flotante)
 
-El programa desarrollado debe contener un menï¿½ con las siguientes opciones:
+El programa desarrollado debe contener un menú con las siguientes opciones:
 
     1. Dar de alta un producto.
     2. Mostrar todos los productos.
     3. Editar un producto.
     4. Eliminar un producto.
-    5. Crear grï¿½fica de columnas.
-    6. Crear grï¿½fica circular.
+    5. Crear gráfica de columnas.
+    6. Crear gráfica circular.
     7. Salir.
 
 REQUISITOS:
@@ -36,22 +36,22 @@ REQUISITOS:
     Usar:
 	estructuras
 	archivos
-	memoria dinï¿½mica.
+	memoria dinámica.
 	
     Los archivos deben ser binarios.
-    El listado que debe mostrar la opciï¿½n 2 del menï¿½ serï¿½ en forma tabular. 
-	El cï¿½lculo de la ganancia se hace con la siguiente fï¿½rmula: 
+    El listado que debe mostrar la opción 2 del menú será en forma tabular. 
+	El cálculo de la ganancia se hace con la siguiente fórmula: 
 	Ganancia = (Precio-Costo)*Unidades vendidas.()
 
 
-    La opciï¿½n 3, debe permitir cambiar cualquier dato del producto a excepciï¿½n de la clave.
-	La opciï¿½n para eliminar solo debe marcar al registro y no borrarlo fï¿½sicamente.
-	La grï¿½fica de columnas se harï¿½ con el campo "Unidades vendidas". 
+    La opción 3, debe permitir cambiar cualquier dato del producto a excepción de la clave.
+	La opción para eliminar solo debe marcar al registro y no borrarlo físicamente.
+	La gráfica de columnas se hará con el campo "Unidades vendidas". 
 	
-	Nï¿½tese que el fondo es blanco. Los colores pueden ser aleatorios o consecutivos.
+	Nótese que el fondo es blanco. Los colores pueden ser aleatorios o consecutivos.
 
 
-La grï¿½fica circular se harï¿½ con el porcentaje de ganancias de cada producto RESPECTO A LA GANANCIA TOTAL 
+La gráfica circular se hará con el porcentaje de ganancias de cada producto RESPECTO A LA GANANCIA TOTAL 
 									(TODOS LOS PRODUCTOS).
 
 Entregar el archivo binario de productos con al menos 5 registros capturados
@@ -86,24 +86,24 @@ typedef struct
 
 }Producto;
 
-// Agreguï¿½ prototipos para no tener que preocuparnos por el orden al momento de aï¿½adir las funciones. 
-//Cuando se agregue una funciï¿½n favor de agregarla tambiï¿½n a los prototipos.
+// Agregué prototipos para no tener que preocuparnos por el orden al momento de añadir las funciones. 
+//Cuando se agregue una función favor de agregarla también a los prototipos.
 
-void pausa(void); //completado
-void Limpiar_buffer(void); //completado
-void Limpiar_salto_linea(char *cadena); //completado
-int  Buscar_posicion(char *clave, int n, Producto *p); //completado
-void Alta_producto(void); //completado
-void Listado(void); //incompleto: por completar
-void Ver_menu(void); //completado
-int  Seleccion_menu(int opcion); //completado
-void borrar(); //haciendo: por completar
+void pausa();
+void Limpiar_buffer();
+void Limpiar_salto_linea(char *cadena);
+int  Buscar_posicion(char *clave, int n, Producto *p);
+void Alta_producto();
+void Listado();
+void Editar_producto();
+void Ver_menu();
+int  Seleccion_menu(int opcion);
 
 // ---------------------------- FUNCIONES AUXILIARES ------------------------------//
 
 
-//Detiene la ejecuciï¿½n hasta que se pulsa ENTER
-void pausa(void)
+//Detiene la ejecución hasta que se pulsa ENTER
+void pausa()
 {
 	printf("\nPresione Enter para continuar...");
 	fflush(stdout); //Vacia el buffer de salida para que se alcance a leer el mensaje.
@@ -157,47 +157,27 @@ int Buscar_posicion(char *clave, int n, Producto *p)
     return encontrado;
 }
 
-//////////////////////////////////
 
-void Listado(void) //SEGUNDA OPCION
+void Ver_menu()
 {
-<<<<<<< HEAD
-    FILE *archivo;
-    Producto temp;
-    int i = 1;
+	system("cls"); //agregar al principio de cada funcion principal, de preferencia
+    printf("\n\t------------ MENÚ ------------\n");
+    printf("\t 1. Dar de alta un producto\n");
+    printf("\t 2. Mostrar todos los productos\n");
+    printf("\t 3. Editar un producto\n");
+    printf("\t 4. Eliminar un producto\n");
+    printf("\t 5. Crear gráfica de columnas\n");
+    printf("\t 6. Crear gráfica circular\n");  
+    printf("\t 7. Salir\n\n\n");                   
+}
 
-	system("cls");
 
-    printf("\n\t\tLISTADO DE PRODUCTOS\n");
+// ---------------------------- FUNCIONES PRINCIPALES ------------------------------//
 
-    archivo = fopen("productos.dat", "rb");
 
-    if (archivo == NULL)    {
-        printf("\tError: no se pudo abrir el archivo para lectura.\n");
-        system("pause");
-        return;
-    }
-    
-    fread(&temp, sizeof(Producto), 1, archivo);
-
-    while(!feof(archivo))
-    {
-        if(temp.borrado == 0) // Solo muestra los no eliminados
-        {
-            printf("clave: %s\n", temp.clave);
-            printf("descripciï¿½n: %s\n", temp.descripcion_producto);
-            printf("costo de producciï¿½n: %.2f\n", temp.costo_produccion);
-            printf("precio de venta: %.2f\n", temp.precio_venta);
-            printf("unidades vendidas: %.0f\n", temp.unidades_vendidas);
-        }
-        printf("-----------------------------------\n");
-        fread(&temp, sizeof(Producto), 1, archivo);
-    }
-
-    pausa();
-
-    fclose(archivo);
-=======
+//////////////////////////////////////////////////////////////////////////////////////
+void Listado() //SEGUNDA OPCION
+{
     system("cls");
 
     FILE *archivo;
@@ -285,27 +265,11 @@ void Listado(void) //SEGUNDA OPCION
 
     free(lista);
     pausa();
->>>>>>> c7b592967926480de5cc9efe1dfeba31ea63dce0
 }
 
-///////////////////////////////////
-void Ver_menu(void)
-{
-	system("cls"); //agregar al principio de cada funcion principal, de preferencia
-    printf("\n\t------------ MENï¿½ ------------\n");
-    printf("\t 1. Dar de alta un producto\n");
-    printf("\t 2. Mostrar todos los productos\n");
-    printf("\t 3. Editar un producto\n");
-    printf("\t 4. Eliminar un producto\n");
-    printf("\t 5. Crear grï¿½fica de columnas\n");
-    printf("\t 6. Crear grï¿½fica circular\n");  
-    printf("\t 7. Salir\n\n\n");                   
-}
+//////////////////////////////////////////////////////////////////////////////////////////////
 
-
-// ---------------------------- FUNCIONES PRINCIPALES ------------------------------//
-
-void Alta_producto(void)
+void Alta_producto()
 {
     Producto nuevo;
     FILE *archivo;
@@ -327,7 +291,7 @@ void Alta_producto(void)
             n++;
         rewind(archivo);
 
-        // Cargar en memoria dinï¿½mica
+        // Cargar en memoria dinámica
         lista = (Producto *)malloc(n * sizeof(Producto));
         if (lista == NULL)
         {
@@ -360,29 +324,24 @@ void Alta_producto(void)
             continue;
         }
 
-        break; // Clave vï¿½lida y ï¿½nica
+        break; // Clave válida y única
 
     } while (1);
 
     strncpy(nuevo.clave, clave_temp, 4); // Copia los 3 chars + \0
 
-<<<<<<< HEAD
-    // 2. DESCRIPCIï¿½N DEL PROD.
-    printf("\tDescripciï¿½n del producto (mï¿½x. 49 caracteres): ");
-=======
     // 2. DESCRIPCIÓN DEL PROD.
     printf("\tDescripción del producto (máx. 50 caracteres): ");
->>>>>>> c7b592967926480de5cc9efe1dfeba31ea63dce0
     fgets(nuevo.descripcion_producto, sizeof(nuevo.descripcion_producto), stdin);
     Limpiar_salto_linea(nuevo.descripcion_producto);
 
-    // 3. COSTO DE PRODUCCIï¿½N
+    // 3. COSTO DE PRODUCCIÓN
     do
     {
-        printf("\tCosto de producciï¿½n: $");
+        printf("\tCosto de producción: $");
         if (scanf("%f", &nuevo.costo_produccion) != 1 || nuevo.costo_produccion < 0)
         {
-            printf("\tError: ingrese un valor numï¿½rico positivo.\n");
+            printf("\tError: ingrese un valor numérico positivo.\n");
             Limpiar_buffer();
             nuevo.costo_produccion = -1; // reintento
             continue;
@@ -394,10 +353,10 @@ void Alta_producto(void)
     // 4. PRECIO DE VENTA
     do
     {
-        printf("\tPrecio de venta:     $");
+        printf("\tPrecio de venta: $");
         if (scanf("%f", &nuevo.precio_venta) != 1 || nuevo.precio_venta < 0)
         {
-            printf("\tError: ingrese un valor numï¿½rico positivo.\n");
+            printf("\tError: ingrese un valor numérico positivo.\n");
             Limpiar_buffer();
             nuevo.precio_venta = -1;
             continue;
@@ -409,10 +368,10 @@ void Alta_producto(void)
     // 5. UNIDADES VENDIDAS
     do
     {
-        printf("\tUnidades vendidas:   ");
+        printf("\tUnidades vendidas: ");
         if (scanf("%f", &nuevo.unidades_vendidas) != 1 || nuevo.unidades_vendidas < 0)
         {
-            printf("\tError: ingrese un valor numï¿½rico positivo.\n");
+            printf("\tError: ingrese un valor numérico positivo.\n");
             Limpiar_buffer();
             nuevo.unidades_vendidas = -1;
             continue;
@@ -421,21 +380,21 @@ void Alta_producto(void)
         break;
     } while (1);
 
-    // 6. BORRADO lï¿½gico: siempre inicia en 0 (activo)
+    // 6. BORRADO lógico: siempre inicia en 0 (activo)
     nuevo.borrado = 0;
 
     // 7. CALCULA LA GANANCIA
     float ganancia = (nuevo.precio_venta - nuevo.costo_produccion) * nuevo.unidades_vendidas;
 
-    // 8. CONFIRMACIï¿½N
+    // 8. CONFIRMACIÓN
     printf("\n\t	CONFIRMAR DATOS 	\n");
-    printf("\tClave           : %s\n",  nuevo.clave);
-    printf("\tDescripciï¿½n     : %s\n",  nuevo.descripcion_producto);
-    printf("\tCosto producciï¿½n: $%.2f\n", nuevo.costo_produccion);
-    printf("\tPrecio de venta : $%.2f\n", nuevo.precio_venta);
+    printf("\tClave: %s\n",  nuevo.clave);
+    printf("\tDescripción: %s\n",  nuevo.descripcion_producto);
+    printf("\tCosto producción: $%.2f\n", nuevo.costo_produccion);
+    printf("\tPrecio de venta: $%.2f\n", nuevo.precio_venta);
     printf("\tUnidades vendidas: %.0f\n", nuevo.unidades_vendidas);
     printf("\tGanancia estimada: $%.2f\n", ganancia);
-    printf("\n\tï¿½Guardar este producto? (s/n): ");
+    printf("\n\t¿Guardar este producto? (s/n): ");
 
     char confirmacion;
     confirmacion = getchar();
@@ -464,10 +423,229 @@ void Alta_producto(void)
 
     printf("\n\tProducto '%s' guardado correctamente.\n", nuevo.clave);
 
-    // 10. LIBERAR MEMORIA DINï¿½MICA
+    // 10. LIBERAR MEMORIA DINÁMICA
     free(lista);
 
     pausa(); //hacer que vea el mensaje, sino pasa de largo
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+void Editar_producto()
+{
+    system("cls");
+
+    FILE *archivo;
+    Producto *lista = NULL;
+    int n = 0, i, pos;
+    char clave_buscar[10];
+    int opcion_campo;
+
+    // Abrimos el archivo en modo lectura binaria para cargar los productos existentes
+    archivo = fopen("productos.dat", "rb");
+    if (archivo == NULL)
+    {
+        printf("\n\tNo hay productos registrados aún.\n");
+        pausa();
+        return;
+    }
+
+    // Contamos cuántos registros hay en el archivo recorriéndolo completo
+    Producto temp;
+    while (fread(&temp, sizeof(Producto), 1, archivo) == 1)
+        n++;
+    rewind(archivo); // Regresamos el cursor al inicio para poder leer de nuevo
+
+    if (n == 0)
+    {
+        fclose(archivo);
+        printf("\n\tEl archivo está vacío.\n");
+        pausa();
+        return;
+    }
+
+    // Reservamos memoria dinámica para guardar todos los registros del archivo
+    lista = (Producto *)malloc(n * sizeof(Producto));
+    if (lista == NULL)
+    {
+        printf("\tError: no se pudo reservar memoria.\n");
+        fclose(archivo);
+        pausa();
+        return;
+    }
+
+    // Cargamos todos los registros (incluyendo borrados lógicos) en el arreglo dinámico
+    fread(lista, sizeof(Producto), n, archivo);
+    fclose(archivo);
+
+    // PEDIR CLAVE A BUSCAR
+    printf("\n\tEditar producto\n");
+    printf("\tIngrese la clave del producto a editar: ");
+    fgets(clave_buscar, sizeof(clave_buscar), stdin);
+    Limpiar_salto_linea(clave_buscar); // Quitamos el \n que deja fgets
+
+    // Buscamos la posición del producto en el arreglo; retorna -1 si no existe o está borrado
+    pos = Buscar_posicion(clave_buscar, n, lista);
+    if (pos == -1)
+    {
+        printf("\n\tProducto con clave '%s' no encontrado o está eliminado.\n", clave_buscar);
+        free(lista);
+        pausa();
+        return;
+    }
+
+    // MOSTRAR DATOS ACTUALES del producto encontrado antes de editar
+    printf("\n\tDatos actuales del producto:\n");
+    printf("\t  Clave: %s  (no editable)\n", lista[pos].clave);
+    printf("\t  1. Descripción: %s\n",   lista[pos].descripcion_producto);
+    printf("\t  2. Costo producto: $%.2f\n", lista[pos].costo_produccion);
+    printf("\t  3. Precio venta: $%.2f\n", lista[pos].precio_venta);
+    printf("\t  4. Unid. vendidas: %.0f\n",  lista[pos].unidades_vendidas);
+    printf("\t  5. Editar todos los campos\n");
+    printf("\t  0. Cancelar\n");
+
+// Validamos que la opción ingresada esté en el rango permitido (0 a 5)
+/////////////////////////////////////////////////////////////////////
+    do
+    {
+        printf("\n\t¿Qué desea editar? (0-5): ");
+        if (scanf("%d", &opcion_campo) != 1) // scanf retorna 0 si no pudo leer un entero (ej: letra)
+        {
+            Limpiar_buffer(); // Descartamos el carácter inválido que quedó en el buffer
+            printf("\tError: ingrese solo números del 0 al 5.\n");
+            opcion_campo = -1; // Forzamos reintento con valor fuera del rango válido
+        }
+        else if (opcion_campo < 0 || opcion_campo > 5)
+        {
+            Limpiar_buffer();
+            printf("\tError: opción fuera de rango, ingrese un número del 0 al 5.\n");
+        }
+        else
+        {
+            Limpiar_buffer(); // Limpiamos el \n que dejó el scanf válido
+        }
+    } while (opcion_campo < 0 || opcion_campo > 5);
+ /////////////////////////////////////////////////////////   
+    
+    if (opcion_campo == 0)
+    {
+        printf("\n\tEdición cancelada.\n");
+        free(lista);
+        pausa();
+        return;
+    }
+
+    printf("\n");
+
+    // EDITAR DESCRIPCIÓN: se ejecuta si eligió 1 o editar todo (5)
+    if (opcion_campo == 1 || opcion_campo == 5)
+    {
+        printf("\tNueva descripción (máx. 50 caracteres): ");
+        // fgets escribe directamente sobre el campo del registro en memoria dinámica
+        fgets(lista[pos].descripcion_producto, sizeof(lista[pos].descripcion_producto), stdin);
+        Limpiar_salto_linea(lista[pos].descripcion_producto);
+    }
+
+    // EDITAR COSTO: se ejecuta si eligió 2 o editar todo (5)
+    if (opcion_campo == 2 || opcion_campo == 5)
+    {
+        do
+        {
+            printf("\tNuevo costo de producción: $");
+            // Validamos que sea un número y que no sea negativo
+            if (scanf("%f", &lista[pos].costo_produccion) != 1 || lista[pos].costo_produccion < 0)
+            {
+                printf("\tError: ingrese un valor numérico positivo.\n");
+                Limpiar_buffer();
+                lista[pos].costo_produccion = -1; // Forzamos reintento con valor inválido
+                continue;
+            }
+            Limpiar_buffer();
+            break;
+        } while (1);
+    }
+
+    // EDITAR PRECIO: se ejecuta si eligió 3 o editar todo (5)
+    if (opcion_campo == 3 || opcion_campo == 5)
+    {
+        do
+        {
+            printf("\tNuevo precio de venta: $");
+            if (scanf("%f", &lista[pos].precio_venta) != 1 || lista[pos].precio_venta < 0)
+            {
+                printf("\tError: ingrese un valor numérico positivo.\n");
+                Limpiar_buffer();
+                lista[pos].precio_venta = -1;
+                continue;
+            }
+            Limpiar_buffer();
+            break;
+        } while (1);
+    }
+
+    // EDITAR UNIDADES: se ejecuta si eligió 4 o editar todo (5)
+    if (opcion_campo == 4 || opcion_campo == 5)
+    {
+        do
+        {
+            printf("\tNuevas unidades vendidas: ");
+            if (scanf("%f", &lista[pos].unidades_vendidas) != 1 || lista[pos].unidades_vendidas < 0)
+            {
+                printf("\tError: ingrese un valor numérico positivo.\n");
+                Limpiar_buffer();
+                lista[pos].unidades_vendidas = -1;
+                continue;
+            }
+            Limpiar_buffer();
+            break;
+        } while (1);
+    }
+
+    // Calculamos la ganancia con los datos ya modificados en memoria para mostrarla en la confirmación
+    float ganancia = (lista[pos].precio_venta - lista[pos].costo_produccion)
+                     * lista[pos].unidades_vendidas;
+
+    // Mostramos resumen final antes de confirmar la escritura en disco
+    printf("\n\tDatos actualizados:\n");
+    printf("\t  Clave: %s\n",   lista[pos].clave);
+    printf("\t  Descripción: %s\n",   lista[pos].descripcion_producto);
+    printf("\t  Costo producto: $%.2f\n", lista[pos].costo_produccion);
+    printf("\t  Precio venta: $%.2f\n", lista[pos].precio_venta);
+    printf("\t  Unid. vendidas: %.0f\n",  lista[pos].unidades_vendidas);
+    printf("\t  Ganancia estimada: $%.2f\n", ganancia);
+    printf("\n\t¿Guardar cambios? (s/n): ");
+
+    char confirmacion = getchar();
+    Limpiar_buffer();
+
+    // Si el usuario no confirma, descartamos los cambios
+    if (confirmacion != 's' && confirmacion != 'S')
+    {
+        printf("\n\tCambios descartados.\n");
+        free(lista);
+        pausa();
+        return;
+    }
+
+    // Abrimos el archivo en modo escritura binaria "wb": borra el contenido anterior
+    // y lo reescribimos completo con el arreglo ya modificado en memoria
+    archivo = fopen("productos.dat", "wb");
+    if (archivo == NULL)
+    {
+        printf("\n\tError: no se pudo abrir el archivo para escritura.\n");
+        free(lista);
+        pausa();
+        return;
+    }
+
+    // Escribimos los n registros de golpe; esto incluye borrados lógicos y el registro editado
+    fwrite(lista, sizeof(Producto), n, archivo);
+    fclose(archivo);
+
+    printf("\n\tProducto '%s' actualizado correctamente.\n", lista[pos].clave);
+
+    free(lista); // Liberamos la memoria dinámica que reservamos con malloc
+    pausa();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -492,11 +670,11 @@ int Seleccion_menu(int opcion)
                 	break;
 
                 case 3:
-                	
+                	Editar_producto();
                 	break;
 
                 case 4:
-                	//borrar();
+                	
                 	break;
 
                 case 5:
@@ -512,7 +690,7 @@ int Seleccion_menu(int opcion)
                 	break;
                 
                 default:
-                	printf("\nOpciï¿½n invï¿½lida. Ingrese un nï¿½mero del 1 al 7.\n");
+                	printf("\nOpción inválida. Ingrese un número del 1 al 7.\n");
                 	pausa(); //para que alcance a ver el mensaje
                 	break;
                 	
@@ -521,60 +699,14 @@ int Seleccion_menu(int opcion)
     
     return opcion;
 }
-/*/
-void Borrar(){
-	char clavebuscada[10];
-	FILE *archivo;
-	int posicion, respuesta;
-	
-	system("cls");
-	
-	printf("Borrado de producto\n");
-	
-	printf("Clave del producto: ");
-	LeerCadena(clavebuscada, 3);
-	
-	archivo=fopen("productos.dat", "r+b");
-	
-	posicion=buscarPosicion(clavebuscada, archivo);
-	
-	if(posicion == -1){
-		printf("Producto no encontrado\n");
-		system("pause");
-		return;
-	}
-	
-	//Nos posicionamos en el producto
-	fseek(archivo, posicion*sizeof(Producto) ,SEEK_SET);
-	
-	//Leemos los datos
-	fread(&nuevo, sizeof(Producto), 1, archivo);
-	
-	EscribirProducto(nuevo);
-	
-	printf("ConfirmaciÃ³n de borrado (1=SI / 0=NO): ");
-	scanf("%d", &respuesta);
-	
-	if(respuesta==0)
-		printf("Cancelado\n");
-	else{
-		fseek(archivo, posicion*sizeof(Producto), SEEK_SET);
-		nuevo.borrado=1;
-		fwrite(&nuevo, sizeof(Producto), 1, archivo);
-		printf("Producto borrado\n");
-	}
-	
-	fclose(archivo);
-	
-	system("pause");
-}
-*/
+
+///////////////////////////// MAIN //////////////////////////////////////////////////
 int main()
 {
 	
 	int opcion=0;
 	
-	//caracteres en espaï¿½ol
+	//caracteres en español
     setlocale(LC_ALL, "spanish");
     //conserva el punto de los decimales y no reemplaza por comas.
     setlocale(LC_NUMERIC, "C");
