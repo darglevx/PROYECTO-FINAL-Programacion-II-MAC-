@@ -96,6 +96,7 @@ int  Buscar_posicion(char *clave, int n, Producto *p);
 void Alta_producto();
 void Listado();
 void Editar_producto();
+void Eliminar_producto();
 void Ver_menu();
 int  Seleccion_menu(int opcion);
 
@@ -161,7 +162,7 @@ int Buscar_posicion(char *clave, int n, Producto *p)
 void Ver_menu()
 {
 	system("cls"); //agregar al principio de cada funcion principal, de preferencia
-    printf("\n\t------------ MENÚ ------------\n");
+    printf("\n\t	     MENÚ 		\n\n");
     printf("\t 1. Dar de alta un producto\n");
     printf("\t 2. Mostrar todos los productos\n");
     printf("\t 3. Editar un producto\n");
@@ -505,7 +506,7 @@ void Editar_producto()
     printf("\t  0. Cancelar\n");
 
 // Validamos que la opción ingresada esté en el rango permitido (0 a 5)
-/////////////////////////////////////////////////////////////////////
+//---------------------------DUDA-------------------------------------------------------
     do
     {
         printf("\n\t¿Qué desea editar? (0-5): ");
@@ -525,7 +526,7 @@ void Editar_producto()
             Limpiar_buffer(); // Limpiamos el \n que dejó el scanf válido
         }
     } while (opcion_campo < 0 || opcion_campo > 5);
- /////////////////////////////////////////////////////////   
+ //--------------------------DUDA--------------------------------------------------------
     
     if (opcion_campo == 0)
     {
@@ -647,6 +648,118 @@ void Editar_producto()
     free(lista); // Liberamos la memoria dinámica que reservamos con malloc
     pausa();
 }
+/////////////////////////////////////////////////////////////////////////////////////////
+
+void Eliminar_producto()
+{
+    system("cls");
+
+    FILE *archivo;
+    Producto *lista = NULL;
+    int n = 0, pos;
+    char clave_buscar[10];
+
+    // Abrimos el archivo en modo lectura binaria para cargar los productos existentes
+    archivo = fopen("productos.dat", "rb");
+    if (archivo == NULL)
+    {
+        printf("\n\tNo hay productos registrados aún.\n");
+        pausa();
+        return;
+    }
+
+    // Contamos cuántos registros hay recorriendo el archivo completo
+    Producto temp;
+    while (fread(&temp, sizeof(Producto), 1, archivo) == 1)
+        n++;
+    rewind(archivo); // Regresamos el cursor al inicio para poder leer de nuevo
+
+    if (n == 0)
+    {
+        fclose(archivo);
+        printf("\n\tEl archivo está vacío.\n");
+        pausa();
+        return;
+    }
+
+    // Reservamos memoria dinámica para todos los registros
+    lista = (Producto *)malloc(n * sizeof(Producto));
+    if (lista == NULL)
+    {
+        printf("\tError: no se pudo reservar memoria.\n");
+        fclose(archivo);
+        pausa();
+        return;
+    }
+
+    // Cargamos todos los registros (incluyendo borrados lógicos) en el arreglo dinámico
+    fread(lista, sizeof(Producto), n, archivo);
+    fclose(archivo);
+
+    // Pedimos la clave del producto a eliminar
+    printf("\n\tEliminar producto\n");
+    printf("\tIngrese la clave del producto a eliminar: ");
+    fgets(clave_buscar, sizeof(clave_buscar), stdin);
+    Limpiar_salto_linea(clave_buscar); // Quitamos el \n que deja fgets
+
+    // Buscamos el producto; retorna -1 si no existe o ya está borrado
+    pos = Buscar_posicion(clave_buscar, n, lista);
+    if (pos == -1)
+    {
+        printf("\n\tProducto con clave '%s' no encontrado o ya está eliminado.\n", clave_buscar);
+        free(lista);
+        pausa();
+        return;
+    }
+
+    // Mostramos los datos del producto antes de confirmar
+    float ganancia = (lista[pos].precio_venta - lista[pos].costo_produccion)
+                     * lista[pos].unidades_vendidas;
+
+    printf("\n\tDatos del producto a eliminar:\n");
+    printf("\t  Clave: %s\n",   lista[pos].clave);
+    printf("\t  Descripción: %s\n",   lista[pos].descripcion_producto);
+    printf("\t  Costo producto: $%.2f\n", lista[pos].costo_produccion);
+    printf("\t  Precio venta: $%.2f\n", lista[pos].precio_venta);
+    printf("\t  Unid. vendidas: %.0f\n",  lista[pos].unidades_vendidas);
+    printf("\t  Ganancia: $%.2f\n", ganancia);
+
+    // Confirmación antes de marcar como eliminado
+    printf("\n\t¿Está seguro de eliminar este producto? (s/n): ");
+    char confirmacion = getchar();
+    Limpiar_buffer();
+
+    if (confirmacion != 's' && confirmacion != 'S')
+    {
+        printf("\n\tEliminación cancelada.\n");
+        free(lista);
+        pausa();
+        return;
+    }
+
+    // Marcamos el registro como borrado lógicamente (borrado = 1)
+    // El registro PERMANECE en el archivo; solo cambia este campo
+    lista[pos].borrado = 1;
+
+    // Abrimos en "wb" para reescribir el archivo completo con el cambio aplicado
+    archivo = fopen("productos.dat", "wb");
+    if (archivo == NULL)
+    {
+        printf("\n\tError: no se pudo abrir el archivo para escritura.\n");
+        free(lista);
+        pausa();
+        return;
+    }
+
+    // Escribimos todos los registros de golpe, incluido el recién marcado como borrado
+    fwrite(lista, sizeof(Producto), n, archivo);
+    fclose(archivo);
+
+    printf("\n\tProducto '%s' eliminado correctamente.\n", lista[pos].clave);
+
+    free(lista); // Liberamos la memoria dinámica que reservamos con malloc
+    pausa();
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 int Seleccion_menu(int opcion)
@@ -674,7 +787,7 @@ int Seleccion_menu(int opcion)
                 	break;
 
                 case 4:
-                	
+                	Eliminar_producto();
                 	break;
 
                 case 5:
